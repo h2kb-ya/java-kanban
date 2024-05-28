@@ -3,7 +3,7 @@ package io.github.h2kb.manager;
 import io.github.h2kb.task.Epic;
 import io.github.h2kb.task.SubTask;
 import io.github.h2kb.task.Task;
-import io.github.h2kb.task.TaskStatus;
+import io.github.h2kb.task.Status;
 
 public class TaskManagerTest {
 
@@ -29,15 +29,15 @@ public class TaskManagerTest {
     private static void createUpdateDeleteTask_happyPath_noError() {
         TaskManager taskManager = new TaskManager();
 
-        Task task = new Task("Бить баклуши", "Описание как бить баклуши", TaskStatus.NEW);
+        Task task = new Task("Бить баклуши", "Описание как бить баклуши", Status.NEW);
         Integer taskId = taskManager.createTask(task);
         assert taskId != null : "Id задачи не может быть пустым";
         assert taskManager.getTask(taskId) != null : "Список задач должен содержать задачу с id " + taskId;
 
-        task.setStatus(TaskStatus.IN_PROGRESS);
+        task.setStatus(Status.IN_PROGRESS);
         taskManager.updateTask(task);
-        assert taskManager.getTask(taskId).getStatus() == TaskStatus.IN_PROGRESS :
-                "Статус задачи должен быть " + TaskStatus.IN_PROGRESS;
+        assert taskManager.getTask(taskId).getStatus() == Status.IN_PROGRESS :
+                "Статус задачи должен быть " + Status.IN_PROGRESS;
 
         taskManager.removeTask(taskId);
         assert !taskManager.isTaskExist(taskId) : "Задача с id " + taskId + " должна быть удалена";
@@ -48,11 +48,11 @@ public class TaskManagerTest {
     private static void createUpdateDeleteEpic_happyPath_noError() {
         TaskManager taskManager = new TaskManager();
 
-        Epic epic = new Epic("Посмотреть Гарри Поттера", "Уже давно хотелось", TaskStatus.NEW);
+        Epic epic = new Epic("Посмотреть Гарри Поттера", "Уже давно хотелось", Status.NEW);
         Integer epicId = taskManager.createTask(epic);
 
-        SubTask subTask1 = new SubTask("Купить телевизор", "Без него Гарри не посмотреть", TaskStatus.NEW, epicId);
-        SubTask subTask2 = new SubTask("Купить подписку на Кинопоиск", "Хотя можно было бы и спиратить", TaskStatus.NEW,
+        SubTask subTask1 = new SubTask("Купить телевизор", "Без него Гарри не посмотреть", Status.NEW, epicId);
+        SubTask subTask2 = new SubTask("Купить подписку на Кинопоиск", "Хотя можно было бы и спиратить", Status.NEW,
                 epicId);
         Integer subTask1Id = taskManager.createTask(subTask1);
         Integer subTask2Id = taskManager.createTask(subTask2);
@@ -62,39 +62,39 @@ public class TaskManagerTest {
         assert taskManager.getSubTasksByEpicId(epicId).stream().
                 anyMatch(i -> i.getId().equals(subTask2Id)) : "Эпик должен быть связан с подзадачей 2";
 
-        subTask1.setStatus(TaskStatus.IN_PROGRESS);
+        subTask1.setStatus(Status.IN_PROGRESS);
         taskManager.updateTask(subTask1);
-        assert taskManager.getSubTask(subTask1Id).getStatus() == TaskStatus.IN_PROGRESS :
-                "Статус подзадачи должен быть " + TaskStatus.IN_PROGRESS;
-        assert taskManager.getEpic(epicId).getStatus() == TaskStatus.IN_PROGRESS :
-                "Статус эпика должен быть " + TaskStatus.IN_PROGRESS;
+        assert taskManager.getSubTask(subTask1Id).getStatus() == Status.IN_PROGRESS :
+                "Статус подзадачи должен быть " + Status.IN_PROGRESS;
+        assert taskManager.getEpic(epicId).getStatus() == Status.IN_PROGRESS :
+                "Статус эпика должен быть " + Status.IN_PROGRESS;
 
-        subTask1.setStatus(TaskStatus.DONE);
+        subTask1.setStatus(Status.DONE);
         taskManager.updateTask(subTask1);
-        assert taskManager.getSubTask(subTask1Id).getStatus() == TaskStatus.DONE :
-                "Статус подзадачи должен быть " + TaskStatus.DONE;
-        assert taskManager.getEpic(epicId).getStatus() == TaskStatus.IN_PROGRESS :
-                "Статус эпика должен быть " + TaskStatus.IN_PROGRESS;
+        assert taskManager.getSubTask(subTask1Id).getStatus() == Status.DONE :
+                "Статус подзадачи должен быть " + Status.DONE;
+        assert taskManager.getEpic(epicId).getStatus() == Status.IN_PROGRESS :
+                "Статус эпика должен быть " + Status.IN_PROGRESS;
 
-        subTask2.setStatus(TaskStatus.DONE);
+        subTask2.setStatus(Status.DONE);
         taskManager.updateTask(subTask2);
-        assert taskManager.getSubTask(subTask2Id).getStatus() == TaskStatus.DONE :
-                "Статус подзадачи должен быть " + TaskStatus.DONE;
-        assert taskManager.getEpic(epicId).getStatus() == TaskStatus.DONE :
-                "Статус эпика должен быть " + TaskStatus.DONE;
+        assert taskManager.getSubTask(subTask2Id).getStatus() == Status.DONE :
+                "Статус подзадачи должен быть " + Status.DONE;
+        assert taskManager.getEpic(epicId).getStatus() == Status.DONE :
+                "Статус эпика должен быть " + Status.DONE;
 
-        SubTask subTask3 = new SubTask("Купить попкорн", "Забыли. А голодными смотреть нельзя", TaskStatus.NEW,
+        SubTask subTask3 = new SubTask("Купить попкорн", "Забыли. А голодными смотреть нельзя", Status.NEW,
                 epicId);
         Integer subTask3Id = taskManager.createTask(subTask3);
-        assert taskManager.getEpic(epicId).getStatus() == TaskStatus.IN_PROGRESS :
-                "Статус эпика должен быть " + TaskStatus.IN_PROGRESS;
+        assert taskManager.getEpic(epicId).getStatus() == Status.IN_PROGRESS :
+                "Статус эпика должен быть " + Status.IN_PROGRESS;
 
-        subTask3.setStatus(TaskStatus.DONE);
+        subTask3.setStatus(Status.DONE);
         taskManager.updateTask(subTask3);
-        assert taskManager.getSubTask(subTask3Id).getStatus() == TaskStatus.DONE :
-                "Статус подзадачи должен быть " + TaskStatus.DONE;
-        assert taskManager.getEpic(epicId).getStatus() == TaskStatus.DONE :
-                "Статус эпика должен быть " + TaskStatus.DONE;
+        assert taskManager.getSubTask(subTask3Id).getStatus() == Status.DONE :
+                "Статус подзадачи должен быть " + Status.DONE;
+        assert taskManager.getEpic(epicId).getStatus() == Status.DONE :
+                "Статус эпика должен быть " + Status.DONE;
 
         assert taskManager.getSubTasksByEpicId(epicId).size() == 3 : "Эпик должен иметь три подзадачи";
         taskManager.removeEpic(epicId);
@@ -107,9 +107,9 @@ public class TaskManagerTest {
     private static void clearTasks_happyPath_noError() {
         TaskManager taskManager = new TaskManager();
 
-        Task task1 = new Task("Считать овец", "По другому не уснуть", TaskStatus.NEW);
-        Task task2 = new Task("Бродить по комнате 1 час", "По другому не уснуть", TaskStatus.NEW);
-        Task task3 = new Task("Посетить душ", "По другому не уснуть", TaskStatus.NEW);
+        Task task1 = new Task("Считать овец", "По другому не уснуть", Status.NEW);
+        Task task2 = new Task("Бродить по комнате 1 час", "По другому не уснуть", Status.NEW);
+        Task task3 = new Task("Посетить душ", "По другому не уснуть", Status.NEW);
         taskManager.createTask(task1);
         taskManager.createTask(task2);
         taskManager.createTask(task3);
@@ -124,15 +124,15 @@ public class TaskManagerTest {
     private static void clearEpics_happyPath_epicsAndSubTasksRemoved() {
         TaskManager taskManager = new TaskManager();
 
-        Epic epic1 = new Epic("Выучить английский", "Пригодиться", TaskStatus.NEW);
-        Epic epic2 = new Epic("Научиться рисовать", "Тоже пригодиться", TaskStatus.NEW);
+        Epic epic1 = new Epic("Выучить английский", "Пригодиться", Status.NEW);
+        Epic epic2 = new Epic("Научиться рисовать", "Тоже пригодиться", Status.NEW);
         Integer epic1Id = taskManager.createTask(epic1);
         Integer epic2Id = taskManager.createTask(epic2);
         assert taskManager.getAllEpics().size() == 2 : "Список эпиков должен содержать два эпика";
 
-        SubTask subTask1 = new SubTask("Прочитать Гарри Поттера на английском", "Потом и посмотрим на английском", TaskStatus.NEW, epic1Id);
-        SubTask subTask2 = new SubTask("Посмотреть Гарри Поттера на английском", "Гарри, Гарри, Гарри", TaskStatus.NEW, epic1Id);
-        SubTask subTask3 = new SubTask("Купить акварель", "А можно и угольком порисовать", TaskStatus.NEW,
+        SubTask subTask1 = new SubTask("Прочитать Гарри Поттера на английском", "Потом и посмотрим на английском", Status.NEW, epic1Id);
+        SubTask subTask2 = new SubTask("Посмотреть Гарри Поттера на английском", "Гарри, Гарри, Гарри", Status.NEW, epic1Id);
+        SubTask subTask3 = new SubTask("Купить акварель", "А можно и угольком порисовать", Status.NEW,
                 epic2Id);
         taskManager.createTask(subTask1);
         taskManager.createTask(subTask2);
@@ -149,25 +149,25 @@ public class TaskManagerTest {
     private static void removeSubTask_happyPath_subTasksRemovedAndEpicHasNoSubTaskId() {
         TaskManager taskManager = new TaskManager();
 
-        Epic epic = new Epic("Выучить английский", "Пригодиться", TaskStatus.NEW);
+        Epic epic = new Epic("Выучить английский", "Пригодиться", Status.NEW);
         Integer epicId = taskManager.createTask(epic);
 
-        SubTask subTask1 = new SubTask("Прочитать Гарри Поттера на английском", "Потом и посмотрим на английском", TaskStatus.NEW, epicId);
-        SubTask subTask2 = new SubTask("Посмотреть Гарри Поттера на английском", "Гарри, Гарри, Гарри", TaskStatus.NEW, epicId);
+        SubTask subTask1 = new SubTask("Прочитать Гарри Поттера на английском", "Потом и посмотрим на английском", Status.NEW, epicId);
+        SubTask subTask2 = new SubTask("Посмотреть Гарри Поттера на английском", "Гарри, Гарри, Гарри", Status.NEW, epicId);
         taskManager.createTask(subTask1);
         taskManager.createTask(subTask2);
-        assert taskManager.getEpic(epicId).getChildren().size() == 2 : "У эпика две подзадачи";
+        assert taskManager.getEpic(epicId).getSubTaskIds().size() == 2 : "У эпика две подзадачи";
 
-        SubTask subTask3 = new SubTask("Посмотреть Друзей на английском", "Джо, Джо, Джо", TaskStatus.NEW, epicId);
+        SubTask subTask3 = new SubTask("Посмотреть Друзей на английском", "Джо, Джо, Джо", Status.NEW, epicId);
         taskManager.createTask(subTask3);
-        assert taskManager.getEpic(epicId).getChildren().size() == 3 : "У эпика три подзадачи";
+        assert taskManager.getEpic(epicId).getSubTaskIds().size() == 3 : "У эпика три подзадачи";
 
         taskManager.removeSubTask(subTask3.getId());
         taskManager.removeSubTask(subTask2.getId());
-        assert taskManager.getEpic(epicId).getChildren().size() == 1 : "У эпика осталась одна подзадача";
+        assert taskManager.getEpic(epicId).getSubTaskIds().size() == 1 : "У эпика осталась одна подзадача";
 
         taskManager.clearSubTasks();
-        assert taskManager.getEpic(epicId).getChildren().isEmpty() : "У эпика больше нет подзадач";
+        assert taskManager.getEpic(epicId).getSubTaskIds().isEmpty() : "У эпика больше нет подзадач";
 
         System.out.println("Test 'removeSubTask_happyPath_subTasksRemovedAndEpicHasNoSubTaskId()' passed.");
     }

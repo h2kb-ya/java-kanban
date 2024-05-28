@@ -5,13 +5,13 @@ import java.util.List;
 
 public class Epic extends Task {
 
-    private final List<Integer> children = new ArrayList<>();
+    private final List<Integer> subTaskIds = new ArrayList<>();
 
-    public Epic(String name, String description, TaskStatus status) {
+    public Epic(String name, String description, Status status) {
         super(name, description, status);
     }
 
-    public List<Integer> getChildren() {
-        return children;
+    public List<Integer> getSubTaskIds() {
+        return subTaskIds;
     }
 }

@@ -7,9 +7,9 @@ public class Task {
     private Integer id;
     private String name;
     private String description;
-    private TaskStatus status;
+    private Status status;
 
-    public Task(String name, String description, TaskStatus status) {
+    public Task(String name, String description, Status status) {
         this.name = name;
         this.description = description;
         this.status = status;
@@ -39,11 +39,11 @@ public class Task {
         this.description = description;
     }
 
-    public TaskStatus getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(TaskStatus status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 
@@ -66,8 +66,7 @@ public class Task {
             return false;
         }
         Task task = (Task) o;
-        return Objects.equals(getId(), task.getId()) && Objects.equals(getName(), task.getName()) &&
-                Objects.equals(getDescription(), task.getDescription()) && getStatus() == task.getStatus();
+        return Objects.equals(getId(), task.getId());
     }
 
     @Override

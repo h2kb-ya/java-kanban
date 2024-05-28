@@ -2,14 +2,14 @@ package io.github.h2kb.task;
 
 public class SubTask extends Task {
 
-    private final Integer parentId;
+    private final Integer epicId;
 
-    public SubTask(String name, String description, TaskStatus status, Integer parentId) {
+    public SubTask(String name, String description, Status status, Integer epicId) {
         super(name, description, status);
-        this.parentId = parentId;
+        this.epicId = epicId;
     }
 
-    public Integer getParentId() {
-        return parentId;
+    public Integer getEpicId() {
+        return epicId;
     }
 }

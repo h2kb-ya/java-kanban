@@ -1,6 +1,6 @@
 package io.github.h2kb.task;
 
-public enum TaskStatus {
+public enum Status {
     NEW,
     IN_PROGRESS,
     DONE
