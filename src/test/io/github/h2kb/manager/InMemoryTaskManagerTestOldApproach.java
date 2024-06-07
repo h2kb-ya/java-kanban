@@ -5,7 +5,7 @@ import io.github.h2kb.task.SubTask;
 import io.github.h2kb.task.Task;
 import io.github.h2kb.task.Status;
 
-public class TaskManagerTest {
+public class InMemoryTaskManagerTestOldApproach {
 
     public static void main(String[] args) {
         createTaskManager_happyPath_createdTaskManagerWithoutTasks();
@@ -17,7 +17,7 @@ public class TaskManagerTest {
     }
 
     private static void createTaskManager_happyPath_createdTaskManagerWithoutTasks() {
-        TaskManager taskManager = new TaskManager();
+        InMemoryTaskManager taskManager = new InMemoryTaskManager();
 
         assert taskManager.getAllTasks().isEmpty() : "Спискок задач должен быть пуст";
         assert taskManager.getAllEpics().isEmpty() : "Список эпиков должен быть пуст";
@@ -27,7 +27,7 @@ public class TaskManagerTest {
     }
 
     private static void createUpdateDeleteTask_happyPath_noError() {
-        TaskManager taskManager = new TaskManager();
+        InMemoryTaskManager taskManager = new InMemoryTaskManager();
 
         Task task = new Task("Бить баклуши", "Описание как бить баклуши", Status.NEW);
         Integer taskId = taskManager.createTask(task);
@@ -46,7 +46,7 @@ public class TaskManagerTest {
     }
 
     private static void createUpdateDeleteEpic_happyPath_noError() {
-        TaskManager taskManager = new TaskManager();
+        InMemoryTaskManager taskManager = new InMemoryTaskManager();
 
         Epic epic = new Epic("Посмотреть Гарри Поттера", "Уже давно хотелось", Status.NEW);
         Integer epicId = taskManager.createTask(epic);
@@ -105,7 +105,7 @@ public class TaskManagerTest {
     }
 
     private static void clearTasks_happyPath_noError() {
-        TaskManager taskManager = new TaskManager();
+        InMemoryTaskManager taskManager = new InMemoryTaskManager();
 
         Task task1 = new Task("Считать овец", "По другому не уснуть", Status.NEW);
         Task task2 = new Task("Бродить по комнате 1 час", "По другому не уснуть", Status.NEW);
@@ -122,7 +122,7 @@ public class TaskManagerTest {
     }
 
     private static void clearEpics_happyPath_epicsAndSubTasksRemoved() {
-        TaskManager taskManager = new TaskManager();
+        InMemoryTaskManager taskManager = new InMemoryTaskManager();
 
         Epic epic1 = new Epic("Выучить английский", "Пригодиться", Status.NEW);
         Epic epic2 = new Epic("Научиться рисовать", "Тоже пригодиться", Status.NEW);
@@ -147,7 +147,7 @@ public class TaskManagerTest {
     }
 
     private static void removeSubTask_happyPath_subTasksRemovedAndEpicHasNoSubTaskId() {
-        TaskManager taskManager = new TaskManager();
+        InMemoryTaskManager taskManager = new InMemoryTaskManager();
 
         Epic epic = new Epic("Выучить английский", "Пригодиться", Status.NEW);
         Integer epicId = taskManager.createTask(epic);
