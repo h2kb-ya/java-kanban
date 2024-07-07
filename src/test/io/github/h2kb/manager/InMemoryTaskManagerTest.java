@@ -174,7 +174,7 @@ class InMemoryTaskManagerTest {
         Epic epic = new Epic("Epic name", "Epic description", Status.NEW);
         Integer epicId = taskManager.createTask(epic);
 
-        assertEquals(taskManager.getTask(epicId), taskManager.getTask(epicId));
+        assertEquals(taskManager.getEpic(epicId), taskManager.getEpic(epicId));
     }
 
     @Test
