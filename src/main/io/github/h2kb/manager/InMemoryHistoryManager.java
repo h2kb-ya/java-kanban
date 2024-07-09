@@ -19,6 +19,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         }
 
         historyList.put(task.getId(), linkLast(task));
+        checkForCycles();
     }
 
     @Override
@@ -30,6 +31,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         }
 
         removeNode(node);
+        checkForCycles();
     }
 
     @Override
@@ -90,6 +92,24 @@ public class InMemoryHistoryManager implements HistoryManager {
         }
 
         return tasks;
+    }
+
+    private void checkForCycles() {
+        if (first == null) {
+            return;
+        }
+
+        Node<Task> slow = first;
+        Node<Task> fast = first;
+
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+
+            if (slow == fast) {
+                throw new IllegalStateException("Detected a cycle in the linked list.");
+            }
+        }
     }
 
     private static class Node<E extends Task> {
