@@ -57,10 +57,10 @@ public class InMemoryTaskManagerTestOldApproach {
         Integer subTask1Id = taskManager.createTask(subTask1);
         Integer subTask2Id = taskManager.createTask(subTask2);
         assert taskManager.getSubTasksByEpicId(epicId).size() == 2 : "Эпик должен иметь две подзадачи";
-        assert taskManager.getSubTasksByEpicId(epicId).stream().
-                anyMatch(i -> i.getId().equals(subTask1Id)) : "Эпик должен быть связан с подзадачей 1";
-        assert taskManager.getSubTasksByEpicId(epicId).stream().
-                anyMatch(i -> i.getId().equals(subTask2Id)) : "Эпик должен быть связан с подзадачей 2";
+        assert taskManager.getSubTasksByEpicId(epicId).stream()
+                .anyMatch(i -> i.getId().equals(subTask1Id)) : "Эпик должен быть связан с подзадачей 1";
+        assert taskManager.getSubTasksByEpicId(epicId).stream()
+                .anyMatch(i -> i.getId().equals(subTask2Id)) : "Эпик должен быть связан с подзадачей 2";
 
         subTask1.setStatus(Status.IN_PROGRESS);
         taskManager.updateTask(subTask1);

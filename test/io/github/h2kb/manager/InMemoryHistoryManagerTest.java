@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class InMemoryHistoryManagerTest {
+
     private HistoryManager historyManager;
 
     @BeforeEach
@@ -29,16 +30,20 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void addHistory_tryToAddElevenRecords_returnAddedHistorySizeIsTen() {
-        Task firstTask = new Task("First task", "First task description", Status.NEW);
-        Task secondTask = new Task("Second task", "Second task description", Status.NEW);
-
         for (int i = 0; i <= 10; i++) {
-            historyManager.add(firstTask);
+            Task task = new Task("Task " + i, "Description task " + i, Status.NEW);
+            task.setId(i);
+            historyManager.add(task);
         }
-        historyManager.add(secondTask);
+
+        for (int i = 0; i <= 5; i++) {
+            Task task = new Task("Task " + i, "Description task " + i, Status.NEW);
+            task.setId(i);
+            historyManager.add(task);
+        }
 
         assertEquals(10, historyManager.getHistory().size());
-        assertEquals(secondTask.getName(), historyManager.getHistory().getFirst().getName());
-        assertEquals(firstTask.getName(), historyManager.getHistory().get(1).getName());
+        assertEquals("Task 4", historyManager.getHistory().getLast().getName());
+        assertEquals("Task 6", historyManager.getHistory().getFirst().getName());
     }
 }
