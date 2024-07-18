@@ -17,7 +17,7 @@ public enum TaskType {
             .collect(Collectors.toMap(
                     TaskType::getType,
                     Function.identity(),
-                    (existing, _) -> existing,
+                    (existing, unused) -> existing,
                     () -> new TreeMap<>(String.CASE_INSENSITIVE_ORDER)
             ));
 
