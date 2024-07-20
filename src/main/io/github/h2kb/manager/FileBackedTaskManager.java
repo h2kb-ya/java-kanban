@@ -106,7 +106,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 bw.newLine();
             }
         } catch (IOException e) {
-            throw new ManagerSaveException(e);
+            throw new ManagerSaveException("Error occurred while manager saving.", e);
         }
     }
 
@@ -127,7 +127,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 }
             }
         } catch (IOException e) {
-            throw new ManagerLoadException(e);
+            throw new ManagerLoadException("Error occurred while manager loading.", e);
         }
     }
 
