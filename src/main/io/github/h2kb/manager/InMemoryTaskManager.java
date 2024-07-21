@@ -19,7 +19,7 @@ public class InMemoryTaskManager implements TaskManager {
     private final Map<Integer, SubTask> subTasks = new HashMap<>();
     private final HistoryManager historyManager = Managers.getDefaultHistory();
 
-    private int nextTaskId() {
+    protected int nextTaskId() {
         return taskIdCounter++;
     }
 
@@ -122,42 +122,69 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Integer createTask(Task task) {
         task.setId(nextTaskId());
-
-        if (task instanceof Epic) {
-            epics.put(task.getId(), (Epic) task);
-        } else if (task instanceof SubTask subTask) {
-            Integer epicId = subTask.getEpicId();
-
-            if (epicId != null && epics.containsKey(epicId)) {
-                subTasks.put(task.getId(), subTask);
-                Epic epic = getEpic(epicId);
-
-                epic.getSubTaskIds().add(subTask.getId());
-                calculateEpicStatus(epic);
-            }
-        } else {
-            tasks.put(task.getId(), task);
-        }
+        tasks.put(task.getId(), task);
 
         return task.getId();
     }
 
     @Override
+    public Integer createEpic(Epic epic) {
+        epic.setId(nextTaskId());
+        epics.put(epic.getId(), epic);
+
+        return epic.getId();
+    }
+
+    @Override
+    public Integer createSubTask(SubTask subTask) {
+        Integer epicId = subTask.getEpicId();
+
+        if (epicId == null || !epics.containsKey(epicId)) {
+            return null;
+        }
+
+        subTask.setId(nextTaskId());
+        subTasks.put(subTask.getId(), subTask);
+
+        Epic epic = getEpic(epicId);
+        epic.getSubTaskIds().add(subTask.getId());
+        calculateEpicStatus(epic);
+
+        return subTask.getId();
+    }
+
+    @Override
     public void updateTask(Task task) {
-        if (task == null || !isTaskExist(task.getId())) {
+        if (task == null || !tasks.containsKey(task.getId())) {
             return;
         }
 
-        if (task instanceof Epic) {
-            epics.put(task.getId(), (Epic) task);
-        } else if (task instanceof SubTask subTask) {
-            Epic epic = getEpic(subTask.getEpicId());
+        tasks.put(task.getId(), task);
+    }
 
-            subTasks.put(task.getId(), subTask);
-            calculateEpicStatus(epic);
-        } else {
-            tasks.put(task.getId(), task);
+    @Override
+    public void updateEpic(Epic epic) {
+        if (epic == null || !epics.containsKey(epic.getId())) {
+            return;
         }
+
+        epics.put(epic.getId(), epic);
+    }
+
+    @Override
+    public void updateSubTask(SubTask subTask) {
+        if (subTask == null || !subTasks.containsKey(subTask.getId())) {
+            return;
+        }
+
+        Epic epic = getEpic(subTask.getEpicId());
+
+        if (epic == null) {
+            return;
+        }
+
+        subTasks.put(subTask.getId(), subTask);
+        calculateEpicStatus(epic);
     }
 
     @Override
