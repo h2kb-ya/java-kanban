@@ -5,7 +5,11 @@ import io.github.h2kb.task.Status;
 import io.github.h2kb.task.SubTask;
 import io.github.h2kb.task.Task;
 import io.github.h2kb.task.TaskType;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.StringJoiner;
+import org.junit.platform.commons.util.StringUtils;
 
 public class TaskMapper {
 
@@ -27,7 +31,9 @@ public class TaskMapper {
                 .add(task.getName())
                 .add(task.getStatus().toString())
                 .add(task.getDescription())
-                .add(epic);
+                .add(epic)
+                .add(task.getDuration() == null ? " " : String.valueOf(task.getDuration().toMinutes()))
+                .add(task.getStartTime() == null ? " " : task.getStartTime().toString());
 
         return joiner.toString();
     }
@@ -41,16 +47,25 @@ public class TaskMapper {
                 return new Epic(taskData[2], taskData[4], Status.valueOf(taskData[3]));
             }
             case SUBTASK -> {
-                return new SubTask(taskData[2], taskData[4], Status.valueOf(taskData[3]), Integer.valueOf(taskData[5]));
+                Integer epicId = Integer.valueOf(taskData[5]);
+                Duration duration = StringUtils.isBlank(taskData[6]) ? Duration.ZERO :
+                        Duration.ofMinutes(Long.parseLong(taskData[6]));
+                LocalDateTime startTime = StringUtils.isBlank(taskData[7]) ? null :
+                        LocalDateTime.parse(taskData[7], DateTimeFormatter.ISO_DATE_TIME);
+                return new SubTask(taskData[2], taskData[4], Status.valueOf(taskData[3]), epicId, duration, startTime);
             }
             case TASK -> {
-                return new Task(taskData[2], taskData[4], Status.valueOf(taskData[3]));
+                Duration duration = StringUtils.isBlank(taskData[6]) ? Duration.ZERO :
+                        Duration.ofMinutes(Long.parseLong(taskData[6]));
+                LocalDateTime startTime = StringUtils.isBlank(taskData[7]) ? null :
+                        LocalDateTime.parse(taskData[7], DateTimeFormatter.ISO_DATE_TIME);
+                return new Task(taskData[2], taskData[4], Status.valueOf(taskData[3]), duration, startTime);
             }
             default -> throw new IllegalArgumentException("Invalid task type: " + taskType);
         }
     }
 
     public static String getHeader() {
-        return "id,type,name,status,description,epic";
+        return "id,type,name,status,description,startTime,duration,epic";
     }
 }

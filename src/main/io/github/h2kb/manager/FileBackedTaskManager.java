@@ -16,6 +16,7 @@ import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
+    public static final int HEADER_LINE_NUMBER = 1;
     private final Path storageFile;
 
     public FileBackedTaskManager(Path storageFile) {
@@ -119,13 +120,16 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
             List<String> lines = Files.readAllLines(storageFile);
 
-            for (int i = 1; i < lines.size(); i++) {
-                switch (getTaskType(TaskMapper.fromString(lines.get(i)))) {
-                    case EPIC -> createEpic((Epic) TaskMapper.fromString(lines.get(i)));
-                    case SUBTASK -> createSubTask((SubTask) TaskMapper.fromString(lines.get(i)));
-                    case TASK -> createTask(TaskMapper.fromString(lines.get(i)));
-                }
-            }
+            lines.stream()
+                    .skip(HEADER_LINE_NUMBER)
+                    .map(TaskMapper::fromString)
+                    .forEach(task -> {
+                        switch (getTaskType(task)) {
+                            case EPIC -> createEpic((Epic) task);
+                            case SUBTASK -> createSubTask((SubTask) task);
+                            case TASK -> createTask(task);
+                        }
+                    });
         } catch (IOException e) {
             throw new ManagerLoadException("Error occurred while manager loading.", e);
         }
