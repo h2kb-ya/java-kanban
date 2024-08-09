@@ -1,4 +1,4 @@
-package io.github.h2kb.task.dto;
+package io.github.h2kb.task.dto.mapper;
 
 import io.github.h2kb.task.Epic;
 import io.github.h2kb.task.Status;
@@ -13,10 +13,12 @@ import org.junit.platform.commons.util.StringUtils;
 
 public class TaskMapper {
 
+    public static final String FILE_HEADER = "id,type,name,status,description,startTime,duration,epic";
+
     private TaskMapper() {
     }
 
-    public static String toString(Task task) {
+    public static String mapTaskToString(Task task) {
         StringJoiner joiner = new StringJoiner(",");
 
         TaskType taskType = TaskType.from(task.getClass().getSimpleName());
@@ -38,7 +40,7 @@ public class TaskMapper {
         return joiner.toString();
     }
 
-    public static Task fromString(String line) {
+    public static Task mapTaskFromString(String line) {
         String[] taskData = line.split(",");
         TaskType taskType = TaskType.from(taskData[1]);
 
@@ -66,6 +68,6 @@ public class TaskMapper {
     }
 
     public static String getHeader() {
-        return "id,type,name,status,description,startTime,duration,epic";
+        return FILE_HEADER;
     }
 }
