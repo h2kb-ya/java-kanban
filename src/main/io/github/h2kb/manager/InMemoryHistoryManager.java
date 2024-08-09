@@ -8,6 +8,7 @@ import java.util.Map;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
+    private static final int MAX_HISTORY_SIZE = 10;
     private Node<Task> first;
     private Node<Task> last;
     private final Map<Integer, Node<Task>> historyList = new HashMap<>();
@@ -16,6 +17,10 @@ public class InMemoryHistoryManager implements HistoryManager {
     public void add(Task task) {
         if (historyList.containsKey(task.getId())) {
             remove(task.getId());
+        }
+
+        if (historyList.size() >= MAX_HISTORY_SIZE) {
+            removeNode(first);
         }
 
         historyList.put(task.getId(), linkLast(task));
@@ -86,7 +91,7 @@ public class InMemoryHistoryManager implements HistoryManager {
             return tasks;
         }
 
-        while (node.next != null) {
+        while (node != null) {
             tasks.add(node.item);
             node = node.next;
         }
