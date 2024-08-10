@@ -6,7 +6,7 @@ import io.github.h2kb.task.Epic;
 import io.github.h2kb.task.SubTask;
 import io.github.h2kb.task.Task;
 import io.github.h2kb.task.TaskType;
-import io.github.h2kb.task.dto.TaskMapper;
+import io.github.h2kb.task.dto.mapper.TaskMapper;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -16,6 +16,7 @@ import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
+    public static final int HEADER_LINE_NUMBER = 1;
     private final Path storageFile;
 
     public FileBackedTaskManager(Path storageFile) {
@@ -90,19 +91,19 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
             List<Task> tasks = getAllTasks();
             for (Task task : tasks) {
-                bw.write(TaskMapper.toString(task));
+                bw.write(TaskMapper.mapTaskToString(task));
                 bw.newLine();
             }
 
             List<Epic> epics = getAllEpics();
             for (Epic epic : epics) {
-                bw.write(TaskMapper.toString(epic));
+                bw.write(TaskMapper.mapTaskToString(epic));
                 bw.newLine();
             }
 
             List<SubTask> subTasks = getAllSubTasks();
             for (SubTask subTask : subTasks) {
-                bw.write(TaskMapper.toString(subTask));
+                bw.write(TaskMapper.mapTaskToString(subTask));
                 bw.newLine();
             }
         } catch (IOException e) {
@@ -119,13 +120,16 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
             List<String> lines = Files.readAllLines(storageFile);
 
-            for (int i = 1; i < lines.size(); i++) {
-                switch (getTaskType(TaskMapper.fromString(lines.get(i)))) {
-                    case EPIC -> createEpic((Epic) TaskMapper.fromString(lines.get(i)));
-                    case SUBTASK -> createSubTask((SubTask) TaskMapper.fromString(lines.get(i)));
-                    case TASK -> createTask(TaskMapper.fromString(lines.get(i)));
-                }
-            }
+            lines.stream()
+                    .skip(HEADER_LINE_NUMBER)
+                    .map(TaskMapper::mapTaskFromString)
+                    .forEach(task -> {
+                        switch (getTaskType(task)) {
+                            case EPIC -> createEpic((Epic) task);
+                            case SUBTASK -> createSubTask((SubTask) task);
+                            case TASK -> createTask(task);
+                        }
+                    });
         } catch (IOException e) {
             throw new ManagerLoadException("Error occurred while manager loading.", e);
         }

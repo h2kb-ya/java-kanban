@@ -4,12 +4,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import io.github.h2kb.exception.TaskIntersectionOfTimeException;
 import io.github.h2kb.task.Epic;
 import io.github.h2kb.task.Status;
 import io.github.h2kb.task.SubTask;
 import io.github.h2kb.task.Task;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -183,5 +187,38 @@ class InMemoryTaskManagerTest {
         taskManager.createSubTask(subTask);
 
         assertTrue(taskManager.getAllSubTasks().isEmpty());
+    }
+
+    @Test
+    void createTwoTasks_hasTimeIntersection_gotException() {
+        Task task1 = new Task("Task1 name", "Task description", Status.NEW, Duration.ofMinutes(15),
+                LocalDateTime.now());
+        Task task2 = new Task("Task2 name", "Task description", Status.NEW, Duration.ofMinutes(15),
+                LocalDateTime.now());
+
+        assertThrows(TaskIntersectionOfTimeException.class, () -> {
+            taskManager.createTask(task1);
+            taskManager.createTask(task2);
+        });
+    }
+
+    @Test
+    void createEpicWithSubTasks_subTasksHasStartTime_epicGotRightTime() {
+        Epic epic1 = new Epic("Epic1 name", "Epic1 description", Status.NEW);
+        Integer epic1Id = taskManager.createEpic(epic1);
+
+        SubTask subTask1 = new SubTask("Subtask 1", "Subtask description", Status.NEW, epic1Id, Duration.ofMinutes(15),
+                LocalDateTime.of(2024, 6, 26, 12, 0));
+        SubTask subTask2 = new SubTask("Subtask 2", "Subtask description", Status.NEW, epic1Id, Duration.ofMinutes(15),
+                LocalDateTime.of(2024, 6, 26, 12, 16));
+        SubTask subTask3 = new SubTask("Subtask 2", "Subtask description", Status.NEW, epic1Id);
+        taskManager.createSubTask(subTask1);
+        taskManager.createSubTask(subTask2);
+        taskManager.createSubTask(subTask3);
+        assertEquals(3, taskManager.getAllSubTasks().size());
+
+        assertEquals(Duration.ofMinutes(30), taskManager.getEpic(epic1Id).getDuration());
+        assertEquals(taskManager.getSubTask(subTask1.getId()).getStartTime(), taskManager.getEpic(epic1Id).getStartTime());
+        assertEquals(taskManager.getSubTask(subTask2.getId()).getEndTime(), taskManager.getEpic(epic1Id).getEndTime());
     }
 }
