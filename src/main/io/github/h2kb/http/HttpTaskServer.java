@@ -16,15 +16,12 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class HttpTaskServer {
 
     private static final int PORT = 8090;
     private final HttpServer httpServer;
     private final TaskManager taskManager;
-    private final Logger logger = LoggerFactory.getLogger(HttpTaskServer.class);
 
     public HttpTaskServer(TaskManager taskManager) throws IOException {
         this.taskManager = taskManager;
@@ -43,12 +40,10 @@ public class HttpTaskServer {
 
     public void start() {
         httpServer.start();
-        logger.info("HTTP Server started on port {}", PORT);
     }
 
     public void stop() {
         httpServer.stop(0);
-        logger.info("HTTP Server stopped");
     }
 
     public static Gson getGson() {

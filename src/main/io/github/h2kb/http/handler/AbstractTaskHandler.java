@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public abstract class AbstractTaskHandler<T extends Task> extends BaseHttpHandler {
 
@@ -22,7 +20,6 @@ public abstract class AbstractTaskHandler<T extends Task> extends BaseHttpHandle
     private final Function<T, Integer> createTaskFunction;
     private final Consumer<T> updateTaskConsumer;
     private final Consumer<Integer> removeTaskConsumer;
-    private static final Logger logger = LoggerFactory.getLogger(AbstractTaskHandler.class);
 
     public AbstractTaskHandler(TaskManager taskManager, Class<T> taskClass,
             Supplier<List<T>> allTasksSupplier,
@@ -41,7 +38,6 @@ public abstract class AbstractTaskHandler<T extends Task> extends BaseHttpHandle
 
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
-        logger.info("Handling {} {}", httpExchange.getRequestMethod(), httpExchange.getRequestURI());
 
         switch (httpExchange.getRequestMethod()) {
             case "GET" -> handleGet(httpExchange);
