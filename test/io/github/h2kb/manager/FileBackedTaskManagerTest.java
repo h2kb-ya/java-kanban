@@ -2,6 +2,7 @@ package io.github.h2kb.manager;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import io.github.h2kb.task.Epic;
@@ -12,8 +13,6 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -53,7 +52,10 @@ public class FileBackedTaskManagerTest {
 
         taskManager.createSubTask(subTask1);
         taskManager.createSubTask(subTask2);
-        taskManager.createSubTask(subTask3);
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            taskManager.createSubTask(subTask3);
+        });
 
         Field storageFile = taskManager.getClass().getDeclaredField("storageFile");
         storageFile.setAccessible(true);

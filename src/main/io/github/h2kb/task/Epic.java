@@ -7,11 +7,15 @@ import java.util.List;
 
 public class Epic extends Task {
 
-    private final List<Integer> subTaskIds = new ArrayList<>();
+    private List<Integer> subTaskIds = new ArrayList<>();
     private LocalDateTime endTime;
 
     public Epic(String name, String description, Status status) {
         super(name, description, status);
+    }
+
+    public void setSubTaskIds(List<Integer> subTaskIds) {
+        this.subTaskIds = subTaskIds;
     }
 
     public List<Integer> getSubTaskIds() {

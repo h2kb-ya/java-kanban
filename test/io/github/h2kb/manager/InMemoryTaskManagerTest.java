@@ -184,7 +184,10 @@ class InMemoryTaskManagerTest {
     @Test
     void createSubTask_wrongEpicId_subTaskNotCreated() {
         SubTask subTask = new SubTask("Subtask", "Subtask description", Status.NEW, 333);
-        taskManager.createSubTask(subTask);
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            taskManager.createSubTask(subTask);
+        });
 
         assertTrue(taskManager.getAllSubTasks().isEmpty());
     }
@@ -218,7 +221,8 @@ class InMemoryTaskManagerTest {
         assertEquals(3, taskManager.getAllSubTasks().size());
 
         assertEquals(Duration.ofMinutes(30), taskManager.getEpic(epic1Id).getDuration());
-        assertEquals(taskManager.getSubTask(subTask1.getId()).getStartTime(), taskManager.getEpic(epic1Id).getStartTime());
+        assertEquals(taskManager.getSubTask(subTask1.getId()).getStartTime(),
+                taskManager.getEpic(epic1Id).getStartTime());
         assertEquals(taskManager.getSubTask(subTask2.getId()).getEndTime(), taskManager.getEpic(epic1Id).getEndTime());
     }
 }
