@@ -52,7 +52,7 @@ public class HttpTaskServerTest {
         assertTrue(taskManager.getAllTasks().isEmpty());
 
         HttpClient client = HttpClient.newHttpClient();
-        URI url = URI.create("http://localhost:8090/tasks");
+        URI url = URI.create("http://localhost:8080/tasks");
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(url)
                 .GET()
@@ -70,7 +70,7 @@ public class HttpTaskServerTest {
         assertTrue(taskManager.getAllTasks().isEmpty());
 
         HttpClient client = HttpClient.newHttpClient();
-        URI url = URI.create("http://localhost:8090/tasks/1");
+        URI url = URI.create("http://localhost:8080/tasks/1");
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(url)
                 .GET()
@@ -88,7 +88,7 @@ public class HttpTaskServerTest {
         assertEquals(1, taskManager.getAllTasks().size());
 
         HttpClient client = HttpClient.newHttpClient();
-        URI url = URI.create(String.format("http://localhost:8090/tasks/%d", taskId));
+        URI url = URI.create(String.format("http://localhost:8080/tasks/%d", taskId));
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(url)
                 .GET()
@@ -112,7 +112,7 @@ public class HttpTaskServerTest {
         String taskJson = gson.toJson(task);
 
         HttpClient client = HttpClient.newHttpClient();
-        URI url = URI.create("http://localhost:8090/tasks");
+        URI url = URI.create("http://localhost:8080/tasks");
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(url)
                 .POST(HttpRequest.BodyPublishers.ofString(taskJson))
@@ -136,7 +136,7 @@ public class HttpTaskServerTest {
         String taskJson = gson.toJson(task);
 
         HttpClient client = HttpClient.newHttpClient();
-        URI url = URI.create("http://localhost:8090/tasks");
+        URI url = URI.create("http://localhost:8080/tasks");
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(url)
                 .POST(HttpRequest.BodyPublishers.ofString(taskJson))
@@ -153,7 +153,7 @@ public class HttpTaskServerTest {
         String taskJson = gson.toJson(task);
 
         HttpClient client = HttpClient.newHttpClient();
-        URI url = URI.create("http://localhost:8090/tasks/1");
+        URI url = URI.create("http://localhost:8080/tasks/1");
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(url)
                 .POST(HttpRequest.BodyPublishers.ofString(taskJson))
@@ -172,7 +172,7 @@ public class HttpTaskServerTest {
         String taskJson = gson.toJson(task);
 
         HttpClient client = HttpClient.newHttpClient();
-        URI url = URI.create(String.format("http://localhost:8090/tasks/%d", taskId));
+        URI url = URI.create(String.format("http://localhost:8080/tasks/%d", taskId));
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(url)
                 .POST(HttpRequest.BodyPublishers.ofString(taskJson))
@@ -189,7 +189,7 @@ public class HttpTaskServerTest {
     @Test
     public void deleteTask_taskDoesNotExist_return404() throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
-        URI url = URI.create("http://localhost:8090/tasks/1");
+        URI url = URI.create("http://localhost:8080/tasks/1");
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(url)
                 .DELETE()
@@ -207,7 +207,7 @@ public class HttpTaskServerTest {
         assertFalse(taskManager.getAllTasks().isEmpty());
 
         HttpClient client = HttpClient.newHttpClient();
-        URI url = URI.create(String.format("http://localhost:8090/tasks/%d", taskId));
+        URI url = URI.create(String.format("http://localhost:8080/tasks/%d", taskId));
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(url)
                 .DELETE()
@@ -226,7 +226,7 @@ public class HttpTaskServerTest {
         String subTaskJson = gson.toJson(subTask);
 
         HttpClient client = HttpClient.newHttpClient();
-        URI url = URI.create("http://localhost:8090/subtasks");
+        URI url = URI.create("http://localhost:8080/subtasks");
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(url)
                 .POST(HttpRequest.BodyPublishers.ofString(subTaskJson))
@@ -245,7 +245,7 @@ public class HttpTaskServerTest {
         String taskJson = gson.toJson(subTask);
 
         HttpClient client = HttpClient.newHttpClient();
-        URI url = URI.create("http://localhost:8090/subtasks");
+        URI url = URI.create("http://localhost:8080/subtasks");
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(url)
                 .POST(HttpRequest.BodyPublishers.ofString(taskJson))
@@ -265,7 +265,7 @@ public class HttpTaskServerTest {
     public void getSubTasksByEpicId_epicDoesNotExist_return404() throws IOException, InterruptedException {
 
         HttpClient client = HttpClient.newHttpClient();
-        URI url = URI.create("http://localhost:8090/epics/1/subtasks");
+        URI url = URI.create("http://localhost:8080/epics/1/subtasks");
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(url)
                 .GET()
@@ -294,7 +294,7 @@ public class HttpTaskServerTest {
         taskManager.createSubTask(subTask3);
 
         HttpClient client = HttpClient.newHttpClient();
-        URI url = URI.create(String.format("http://localhost:8090/epics/%d/subtasks", epicId));
+        URI url = URI.create(String.format("http://localhost:8080/epics/%d/subtasks", epicId));
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(url)
                 .GET()
@@ -312,7 +312,7 @@ public class HttpTaskServerTest {
     @Test
     public void getPrioritized_hasNoPrioritized_returnEmptyJson() throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
-        URI url = URI.create("http://localhost:8090/prioritized");
+        URI url = URI.create("http://localhost:8080/prioritized");
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(url)
                 .GET()
@@ -344,7 +344,7 @@ public class HttpTaskServerTest {
         taskManager.createSubTask(subTask3);
 
         HttpClient client = HttpClient.newHttpClient();
-        URI url = URI.create(String.format("http://localhost:8090/prioritized", epicId));
+        URI url = URI.create(String.format("http://localhost:8080/prioritized", epicId));
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(url)
                 .GET()
@@ -369,7 +369,7 @@ public class HttpTaskServerTest {
     @Test
     public void getHistory_hasNoHistory_returnEmptyJson() throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
-        URI url = URI.create("http://localhost:8090/history");
+        URI url = URI.create("http://localhost:8080/history");
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(url)
                 .GET()
@@ -399,28 +399,28 @@ public class HttpTaskServerTest {
         assertTrue(taskManager.getHistory().isEmpty());
 
         HttpClient client = HttpClient.newHttpClient();
-        URI url = URI.create(String.format("http://localhost:8090/tasks/%d", task1Id));
+        URI url = URI.create(String.format("http://localhost:8080/tasks/%d", task1Id));
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(url)
                 .GET()
                 .build();
         client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        url = URI.create(String.format("http://localhost:8090/tasks/%d", task2Id));
+        url = URI.create(String.format("http://localhost:8080/tasks/%d", task2Id));
         request = HttpRequest.newBuilder()
                 .uri(url)
                 .GET()
                 .build();
         client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        url = URI.create(String.format("http://localhost:8090/tasks/%d", task3Id));
+        url = URI.create(String.format("http://localhost:8080/tasks/%d", task3Id));
         request = HttpRequest.newBuilder()
                 .uri(url)
                 .GET()
                 .build();
         client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        url = URI.create("http://localhost:8090/history");
+        url = URI.create("http://localhost:8080/history");
         request = HttpRequest.newBuilder()
                 .uri(url)
                 .GET()
