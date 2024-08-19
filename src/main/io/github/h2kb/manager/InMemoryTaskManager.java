@@ -12,6 +12,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
@@ -157,7 +158,7 @@ public class InMemoryTaskManager implements TaskManager {
         Integer epicId = subTask.getEpicId();
 
         if (epicId == null || !epics.containsKey(epicId)) {
-            return null;
+            throw new IllegalArgumentException(String.format("The epic with id %d was not found", epicId));
         }
 
         subTask.setId(nextTaskId());
@@ -262,12 +263,21 @@ public class InMemoryTaskManager implements TaskManager {
 
         Epic epic = getEpic(id);
 
-        return epic.getSubTaskIds().stream().map(this::getSubTask).toList();
+        return Optional.ofNullable(epic.getSubTaskIds())
+                .orElse(Collections.emptyList())
+                .stream()
+                .map(this::getSubTask)
+                .toList();
     }
 
     @Override
     public List<Task> getHistory() {
         return historyManager.getHistory();
+    }
+
+    @Override
+    public Set<Task> getPrioritizedTasks() {
+        return tasksSortedByStartTime;
     }
 
     protected boolean isTaskExist(Integer id) {
@@ -276,10 +286,6 @@ public class InMemoryTaskManager implements TaskManager {
 
     private boolean allSubTasksHaveStatus(List<SubTask> subTasks, Status status) {
         return subTasks.stream().allMatch(task -> task.getStatus().equals(status));
-    }
-
-    public Set<Task> getPrioritizedTasks() {
-        return tasksSortedByStartTime;
     }
 
     private void calculateEpicStatus(Epic epic) {

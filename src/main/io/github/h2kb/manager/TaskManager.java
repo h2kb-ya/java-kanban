@@ -4,6 +4,7 @@ import io.github.h2kb.task.Epic;
 import io.github.h2kb.task.SubTask;
 import io.github.h2kb.task.Task;
 import java.util.List;
+import java.util.Set;
 
 public interface TaskManager {
 
@@ -46,4 +47,6 @@ public interface TaskManager {
     List<SubTask> getSubTasksByEpicId(Integer id);
 
     List<Task> getHistory();
+
+    Set<Task> getPrioritizedTasks();
 }
